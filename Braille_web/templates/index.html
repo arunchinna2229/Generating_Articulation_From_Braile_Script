@@ -1,0 +1,249 @@
+ <!-- <!DOCTYPE html>
+<html>
+<head>
+	<title>GAB</title>
+</head>
+<body>
+	<a href="/t2b"> Text To Braille </a><br>
+	<br>
+	<a href="/b2t"> Braille To Text </a>
+</body>
+</html> -->
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+  
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+
+    <title>GAB</title>
+
+    <style type="text/css">
+      *
+      {
+        padding :0px;
+        margin:0px; 
+      }
+     
+      .page-header 
+      {
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+      }
+
+      .van
+      {
+        background-color:#ffffff;
+        padding: 8px;
+        margin:10px;
+      }
+
+      .tab-pane
+      {
+        color: white;
+        font-size: 16px;
+        /*text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;*/
+      }
+
+
+      body
+      {
+        background: url('{{ url_for('static', filename='img/IMG_20210526_162652.jpg') }}'); 
+        background-size:cover;   
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        height:100%;
+      }
+
+      #transcript
+      {
+        color:black;
+      }
+
+ .speech {
+        border: 1px solid black;
+        width:300px;
+        padding:0;
+        margin:0
+      }
+
+      .speech input {
+        border:0;
+        width:240px;
+        display:inline-block;
+        height:30px;
+        font-size: 14px;
+      }
+
+      .mic {
+        /*align:right;*/
+        width:70px;
+        height: 70px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        /*width: 50%;*/
+      }
+
+      .footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #d3d9bf;
+   color: black;
+   text-align: center;
+   margin-bottom: 15px;
+   font-weight: bold;
+   padding-top: 8px;
+}
+
+    </style>
+
+
+</head>
+
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1 style="text-align: center;">Generating Articulation From Braille</h1>      
+      </div>
+      <div class="van">
+        <ul class="nav nav-pills nav-justified">
+          <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+          <li><a data-toggle="pill" href="#menu1">Braille To Voice</a></li>
+          <li><a data-toggle="pill" href="#menu2">Voice To Braille</a></li>
+        </ul>
+      </div>
+
+      <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+          <br>
+    <p style="font-size: 20px;">The aim of the Website is to listen the braille characters without knowing the knowledge of Braille for blind people. Visually impaired people are required to master skills to communicate through braille text which itself is a really time-taking and heavy task. In addition, other people need to learn the same set of skills to understand and respond to the visually impaired person. The application we have proposed aims to help people with visual impairment by converting braille text to speech. The basic framework is an embedded system that captures an image, extracts only the region of interest (i.e. region of the image that contains braille characters) and converts that text to speech.  It is implemented using python web framework ‘Flask’, which takes the braille image as input and it undergo a series of image pre-processing steps to locate only that part of the image that contains the text and removes the background and undergo morphological operations to extract the braille text. Finally, the output is the audio that we can listen extracted text.
+	</p>
+
+          <h1>{{ txt }}</h1>
+        </div>
+
+        <div id="menu1" class="tab-pane fade">
+          <form action="braille-to-text" method="POST" name='text-form' >
+            <div class="form-group"><br>
+              <b><label for="text">Enter Braille Text</label></b>
+              <input type="text"  class="form-control form-control-lg" id="text" name="text" value="" required><br>
+              <button type="submit" class="btn btn-success btn-lg btn-block" name="convert-text">Convert
+              </button><br>
+            </div>
+          </form>
+
+          <b><h1 style="color:#000000;text-align: center;font-family:serif;">OR</h1></b> 
+
+          <form action="digest" method="POST" enctype = "multipart/form-data" name='img-form'>
+            <div class="custom-file">
+              <input type = "file" class="custom-file-input" oninput="input_filename();" name = "file" id="file_input" />
+              <label id="file_input_label" class="custom-file-label" for="image">Select Image file
+              </label><br>
+              <div id="file-upload-filename">
+                
+              </div>
+              <br><br>
+              <button type="submit" class="btn btn-success btn-lg btn-block" name="convert-text">Convert-Image
+              </button>
+            </div>
+          </form>   
+
+        </div>
+
+
+        <div id="menu2" class="tab-pane fade">
+          <!-- <form action="/text-to-braille" method="POST">
+            <div class="form-group"><br>
+              <b><label for="text">Enter Single Line Text</label></b>
+              <input type="text" class="form-control form-control-lg" placeholder="Say Something..." name="text">
+              <b><label for="text">Enter Multi-Line Text</label></b>
+              <textarea class="form-control form-control-lg" placeholder="Say Something Story...?" rows="10" cols="40" name="extra_text"></textarea>
+              <button type="submit" class="btn btn-success btn-lg btn-block" name="convert-braille">Convert
+              </button><br>
+            </div>
+          </form>   -->       
+
+          <form id="labnol" method="POST" action="/text-to-braille">
+             <div class="form-group"><br>
+            <!-- <div class="speech"> -->
+              <b><label for="text">Enter Your Text</label></b>
+              <input type="text" class="form-control form-control-lg" name="voiced" id="transcript" placeholder="Say Something" required /> <br>
+              <!-- <img onclick="startDictation()" src="https://i.imgur.com/cHidSVu.gif" /> -->
+              <img class="mic" onclick="startDictation()" src="{{ url_for('static',filename='img/icon.jpg')}}"><br>
+            <!-- </div> -->
+            <button type="submit"  class="btn btn-success btn-lg btn-block" >Convert-Braille</button>
+          </div>
+          </form>
+
+           <b><h1 style="color:black;text-align: center;font-family:serif;font-weight:900;">OR</h1></b> 
+
+
+
+            <form action="/img2braille" method="POST" enctype = "multipart/form-data" name='img-form'>
+            <div class="custom-file">
+              <input type = "file" class="custom-file-input" oninput="input_filename();" name = "file" id="file_input" />
+              <label id="file_input_label" class="custom-file-label" for="image">Select Image file
+              </label><br>
+              <div id="file-upload-filename">
+                
+              </div>
+              <br><br>
+              <button type="submit" class="btn btn-success btn-lg btn-block" name="convert-text">Convert-Image
+              </button>
+            </div>
+          </form>   
+
+
+
+
+        </div>
+<!-- <br><br>
+<div class="footer">
+  <p> BITS © GAB. All rights reserved.</p>
+</div> -->
+
+
+<script type="text/javascript">
+ function startDictation() {
+
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+          var recognition = new webkitSpeechRecognition();
+
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = "en-US";
+          recognition.start();
+
+          recognition.onresult = function (e) {
+            x = e.results[0][0].transcript;
+            // document.getElementById("text").inneHTML = x;
+            // document.write(x)
+            document.getElementById('transcript').value = x;
+            recognition.stop();
+            // document.getElementById('labnol').submit();
+          };
+          recognition.onerror = function(e) {
+            recognition.stop();
+          }
+        }
+      }
+</script>
+
+</body>
+</html> 
